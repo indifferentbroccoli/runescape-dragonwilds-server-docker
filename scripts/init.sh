@@ -12,7 +12,7 @@ else
     groupmod -o -g "${PGID}" steam
 fi
 
-chown -R steam:steam /home/steam/server-files /home/steam/
+chown -R steam:steam /home/steam/
 
 cat /branding
 
@@ -21,6 +21,8 @@ if [ "${UPDATE_ON_START:-true}" = "true" ]; then
 else
     LogWarn "UPDATE_ON_START is set to false, skipping server update"
 fi
+
+chown -R steam:steam /home/steam/server-files
 
 # shellcheck disable=SC2317
 term_handler() {
