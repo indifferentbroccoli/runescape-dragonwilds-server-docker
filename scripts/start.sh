@@ -39,7 +39,7 @@ EOF
 
 LogSuccess "DedicatedServer.ini written to $CONFIG_FILE"
 
-SERVER_EXEC="$SERVER_FILES/RSDragonwilds/Binaries/Linux/RSDragonwilds-Linux-Shipping"
+SERVER_EXEC="$SERVER_FILES/RSDragonwilds/Binaries/Linux/RSDragonwildsServer-Linux-Shipping"
 
 if [ ! -f "$SERVER_EXEC" ]; then
     LogError "Could not find server executable at: $SERVER_EXEC"
@@ -52,4 +52,4 @@ LogInfo "Server starting on port ${DEFAULT_PORT} (UDP)"
 LogInfo "Server name: ${SERVER_NAME}"
 LogInfo "Default world: ${DEFAULT_WORLD_NAME}"
 
-exec "$SERVER_EXEC" -log -NewConsole -Port="${DEFAULT_PORT}"
+exec "$SERVER_EXEC" RSDragonwilds -log -NewConsole -Port="${DEFAULT_PORT}"
