@@ -42,11 +42,19 @@ Log() {
 install() {
   LogAction "Starting server install"
   LogInfo "Installing RuneScape: DragonWilds Dedicated Server (App ID: 4019830)"
-  /depotdownloader/DepotDownloader \
-    -app 4019830 \
-    -os linux \
-    -dir /home/steam/server-files \
-    -validate
+
+  LogInfo "Attempting install via SteamCMD (anonymous)..."
+  /home/steam/steamcmd/steamcmd.sh +runscript /home/steam/server/install.scmd
+
+  if [ $? -ne 0 ]; then
+    LogWarn "SteamCMD failed, falling back to DepotDownloader..."
+    /depotdownloader/DepotDownloader \
+      -app 4019830 \
+      -os linux \
+      -dir /home/steam/server-files \
+      -validate
+  fi
+
   LogSuccess "Server install complete"
 }
 

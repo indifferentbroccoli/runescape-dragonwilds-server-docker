@@ -1,5 +1,5 @@
 # BUILD THE SERVER IMAGE
-FROM --platform=linux/amd64 ubuntu:22.04
+FROM --platform=linux/amd64 cm2network/steamcmd:root
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -11,22 +11,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install .NET 8 runtime (required for DepotDownloader)
+# Install .NET 8 runtime (required for DepotDownloader fallback)
 RUN curl -sL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh && \
     chmod +x /tmp/dotnet-install.sh && \
     /tmp/dotnet-install.sh --channel 8.0 --runtime dotnet --install-dir /usr/share/dotnet && \
     ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet && \
     rm /tmp/dotnet-install.sh
 
-# Download DepotDownloader
+# Download DepotDownloader (fallback)
 ARG DEPOT_DOWNLOADER_VERSION=3.4.0
 RUN curl -sL "https://github.com/SteamRE/DepotDownloader/releases/download/DepotDownloader_${DEPOT_DOWNLOADER_VERSION}/DepotDownloader-linux-x64.zip" -o /tmp/dd.zip && \
     mkdir -p /depotdownloader && \
     unzip /tmp/dd.zip -d /depotdownloader && \
     chmod +x /depotdownloader/DepotDownloader && \
     rm /tmp/dd.zip
-
-RUN useradd -m -s /bin/bash steam
 LABEL maintainer="support@indifferentbroccoli.com" \
       name="indifferentbroccoli/runescape-dragonwilds-server-docker" \
       github="https://github.com/indifferentbroccoli/runescape-dragonwilds-server-docker" \
