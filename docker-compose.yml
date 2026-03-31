@@ -1,0 +1,14 @@
+---
+services:
+  runescape-dragonwilds:
+    image: indifferentbroccoli/runescape-dragonwilds-server-docker
+    platform: linux/amd64
+    restart: unless-stopped
+    container_name: runescape-dragonwilds
+    stop_grace_period: 30s
+    ports:
+      - 7777:7777/udp
+    env_file:
+      - .env
+    volumes:
+      - ./server-files:/home/steam/server-files

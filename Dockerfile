@@ -1,0 +1,60 @@
+# BUILD THE SERVER IMAGE
+FROM --platform=linux/amd64 ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    ca-certificates \
+    unzip \
+    jq \
+    procps \
+    libicu70 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install .NET 8 runtime (required for DepotDownloader)
+RUN curl -sL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh && \
+    chmod +x /tmp/dotnet-install.sh && \
+    /tmp/dotnet-install.sh --channel 8.0 --runtime dotnet --install-dir /usr/share/dotnet && \
+    ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet && \
+    rm /tmp/dotnet-install.sh
+
+# Download latest DepotDownloader
+RUN DDVER=$(curl -sf https://api.github.com/repos/SteamRE/DepotDownloader/releases/latest | jq -r '.tag_name' | tr -d 'v') && \
+    curl -sL "https://github.com/SteamRE/DepotDownloader/releases/download/DepotDownloader_${DDVER}/DepotDownloader-linux-x64.zip" -o /tmp/dd.zip && \
+    mkdir -p /depotdownloader && \
+    unzip /tmp/dd.zip -d /depotdownloader && \
+    chmod +x /depotdownloader/DepotDownloader && \
+    rm /tmp/dd.zip
+
+# Create steam user
+RUN useradd -m -s /bin/bash steam
+
+LABEL maintainer="support@indifferentbroccoli.com" \
+      name="indifferentbroccoli/runescape-dragonwilds-server-docker" \
+      github="https://github.com/indifferentbroccoli/runescape-dragonwilds-server-docker" \
+      dockerhub="https://hub.docker.com/r/indifferentbroccoli/runescape-dragonwilds-server-docker"
+
+ENV HOME=/home/steam \
+    DEFAULT_PORT=7777 \
+    SERVER_NAME="DragonWildsServer" \
+    DEFAULT_WORLD_NAME="MyWorld" \
+    OWNER_ID="" \
+    ADMIN_PASSWORD="" \
+    WORLD_PASSWORD="" \
+    UPDATE_ON_START=true
+
+COPY ./scripts /home/steam/server/
+
+COPY branding /branding
+
+RUN mkdir -p /home/steam/server-files && \
+    chmod +x /home/steam/server/*.sh
+
+WORKDIR /home/steam/server
+
+HEALTHCHECK --start-period=5m \
+            CMD pgrep -f "RSDragonwilds" > /dev/null || exit 1
+
+ENTRYPOINT ["/home/steam/server/init.sh"]
