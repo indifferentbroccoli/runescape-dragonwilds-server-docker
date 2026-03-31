@@ -41,12 +41,7 @@ ENV HOME=/home/steam \
     OWNER_ID="" \
     ADMIN_PASSWORD="" \
     WORLD_PASSWORD="" \
-    UPDATE_ON_START=true \
-    STEAM_USERNAME="" \
-    STEAM_PASSWORD="" \
-    STEAM_REMEMBER_PASSWORD=true \
-    STEAM_QR=true \
-    STEAM_NO_MOBILE=false
+    UPDATE_ON_START=true
 
 COPY ./scripts /home/steam/server/
 
