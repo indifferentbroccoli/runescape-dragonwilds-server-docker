@@ -109,9 +109,3 @@ Owners can ban and unban anyone (online or offline). Admins can ban regular user
 ## Volumes
 
 - `/home/steam/server-files` — Server installation files, saves, and configuration
-
-## Support
-
-For issues and questions:
-- GitHub Issues: [Report an issue](https://github.com/indifferentbroccoli/runscape-dragonwilds-server-docker/issues)
-- Game Server Hosting: [indifferentbroccoli.com](https://indifferentbroccoli.com)
