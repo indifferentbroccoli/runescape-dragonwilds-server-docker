@@ -1,6 +1,0 @@
-@ShutdownOnFailedCommand 1
-@NoPromptForPassword 1
-force_install_dir /home/steam/server-files
-login anonymous
-app_update 4019830 validate
-quit

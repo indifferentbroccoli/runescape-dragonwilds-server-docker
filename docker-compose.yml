@@ -12,3 +12,4 @@ services:
       - .env
     volumes:
       - ./server-files:/home/steam/server-files
+      - ./steam-credentials:/root/.config/DepotDownloader
