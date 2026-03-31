@@ -83,14 +83,6 @@ docker run -d \
 | WORLD_PASSWORD     |                    | Optional join password. Leave empty for a public server                                   |
 | DEFAULT_PORT       | 7777               | The UDP port the server listens on                                                        |
 
-## Finding Your Server
-
-1. **Start the server** using Docker Compose or Docker Run
-2. **Launch RuneScape: DragonWilds** on your gaming PC
-3. **Go to the Worlds screen** and open the **Public** tab
-4. **Search for your exact World Name** (case sensitive) in the search bar
-5. **Join and enjoy!**
-
 > [!NOTE]
 > If your server doesn't appear, check that UDP port 7777 is forwarded through your firewall/router and that `OWNER_ID` and `ADMIN_PASSWORD` are set.
 
