@@ -23,6 +23,8 @@ else
 fi
 
 chown -R steam:steam /home/steam/server-files
+chmod +x /home/steam/server-files/RSDragonwilds/Binaries/Linux/RSDragonwildsServer-Linux-Shipping 2>/dev/null || true
+chmod +x /home/steam/server-files/RSDragonwilds/Plugins/Developer/Sentry/Binaries/Linux/crashpad_handler 2>/dev/null || true
 
 # shellcheck disable=SC2317
 term_handler() {

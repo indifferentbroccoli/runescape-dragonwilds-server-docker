@@ -41,7 +41,7 @@ Log() {
 
 install() {
   LogAction "Starting server install"
-  LogInfo "Installing RuneScape: DragonWilds Dedicated Server (App ID: 4019830)"
+  LogInfo "Installing RuneScape: DragonWilds Dedicated Server"
 
   /depotdownloader/DepotDownloader \
     -app 4019830 \
