@@ -42,19 +42,11 @@ Log() {
 install() {
   LogAction "Starting server install"
   LogInfo "Installing RuneScape: DragonWilds Dedicated Server (App ID: 4019830)"
-
-  if [ -z "${STEAM_USERNAME}" ] || [ -z "${STEAM_PASSWORD}" ]; then
-    LogError "STEAM_USERNAME and STEAM_PASSWORD are required to download the dedicated server."
-    exit 1
-  fi
-
   /depotdownloader/DepotDownloader \
     -app 4019830 \
     -os linux \
     -dir /home/steam/server-files \
-    -validate \
-    -username "${STEAM_USERNAME}" \
-    -password "${STEAM_PASSWORD}"
+    -validate
   LogSuccess "Server install complete"
 }
 

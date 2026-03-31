@@ -8,7 +8,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     unzip \
     procps \
-    libicu70 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -19,7 +18,7 @@ RUN curl -sL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh && \
     ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet && \
     rm /tmp/dotnet-install.sh
 
-# Download latest DepotDownloader
+# Download DepotDownloader
 ARG DEPOT_DOWNLOADER_VERSION=3.4.0
 RUN curl -sL "https://github.com/SteamRE/DepotDownloader/releases/download/DepotDownloader_${DEPOT_DOWNLOADER_VERSION}/DepotDownloader-linux-x64.zip" -o /tmp/dd.zip && \
     mkdir -p /depotdownloader && \
@@ -27,9 +26,7 @@ RUN curl -sL "https://github.com/SteamRE/DepotDownloader/releases/download/Depot
     chmod +x /depotdownloader/DepotDownloader && \
     rm /tmp/dd.zip
 
-# Create steam user
 RUN useradd -m -s /bin/bash steam
-
 LABEL maintainer="support@indifferentbroccoli.com" \
       name="indifferentbroccoli/runescape-dragonwilds-server-docker" \
       github="https://github.com/indifferentbroccoli/runescape-dragonwilds-server-docker" \
