@@ -26,6 +26,29 @@ chown -R steam:steam /home/steam/server-files
 chmod +x /home/steam/server-files/RSDragonwilds/Binaries/Linux/RSDragonwildsServer-Linux-Shipping 2>/dev/null || true
 chmod +x /home/steam/server-files/RSDragonwilds/Plugins/Developer/Sentry/Binaries/Linux/crashpad_handler 2>/dev/null || true
 
+if [ -z "${OWNER_ID}" ]; then
+    LogError "OWNER_ID is not set. The server cannot start without your RuneScape: DragonWilds Player ID."
+    LogError "Find your Player ID in-game at the bottom of the Settings Menu."
+    exit 1
+fi
+
+CONFIG_DIR="/home/steam/server-files/RSDragonwilds/Saved/Config/LinuxServer"
+CONFIG_FILE="$CONFIG_DIR/DedicatedServer.ini"
+mkdir -p "$CONFIG_DIR"
+
+LogInfo "Generating DedicatedServer.ini"
+cat > "$CONFIG_FILE" <<EOF
+[ServerSettings]
+OwnerId=${OWNER_ID}
+ServerName=${SERVER_NAME:-DragonWildsServer}
+DefaultWorldName=${DEFAULT_WORLD_NAME:-MyWorld}
+AdminPassword=${ADMIN_PASSWORD}
+WorldPassword=${WORLD_PASSWORD}
+Port=${DEFAULT_PORT:-7777}
+EOF
+
+chown steam:steam "$CONFIG_FILE"
+
 # shellcheck disable=SC2317
 term_handler() {
     if ! shutdown_server; then
