@@ -7,7 +7,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     ca-certificates \
     unzip \
-    jq \
     procps \
     libicu70 \
     && apt-get clean \
@@ -21,8 +20,8 @@ RUN curl -sL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh && \
     rm /tmp/dotnet-install.sh
 
 # Download latest DepotDownloader
-RUN DDVER=$(curl -sf https://api.github.com/repos/SteamRE/DepotDownloader/releases/latest | jq -r '.tag_name' | tr -d 'v') && \
-    curl -sL "https://github.com/SteamRE/DepotDownloader/releases/download/DepotDownloader_${DDVER}/DepotDownloader-linux-x64.zip" -o /tmp/dd.zip && \
+ARG DEPOT_DOWNLOADER_VERSION=3.4.0
+RUN curl -sL "https://github.com/SteamRE/DepotDownloader/releases/download/DepotDownloader_${DEPOT_DOWNLOADER_VERSION}/DepotDownloader-linux-x64.zip" -o /tmp/dd.zip && \
     mkdir -p /depotdownloader && \
     unzip /tmp/dd.zip -d /depotdownloader && \
     chmod +x /depotdownloader/DepotDownloader && \
