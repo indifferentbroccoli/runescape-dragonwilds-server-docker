@@ -76,7 +76,6 @@ docker run -d \
 | PUID               | 1000               | User ID for file permissions                                                              |
 | PGID               | 1000               | Group ID for file permissions                                                             |
 | UPDATE_ON_START    | true               | If set to false, skips downloading and validating server files on startup                 |
-
 | OWNER_ID           |                    | **Required.** Your RuneScape: DragonWilds Player ID (found in Settings Menu in-game)     |
 | SERVER_NAME        | DragonWildsServer  | Display name of the server                                                                |
 | DEFAULT_WORLD_NAME | MyWorld            | Name of the default world created on first startup                                        |
@@ -90,6 +89,9 @@ docker run -d \
 ## Port Forwarding
 
 Forward **7777 UDP only**. Every router between you and your ISP will need port forwarding configured. See [portforward.com](https://portforward.com) for router-specific guides.
+
+> [!IMPORTANT]
+> The internal and external ports **must match**. If you change `DEFAULT_PORT`, update the port mapping in your compose file to match — e.g. `9000:9000/udp` with `DEFAULT_PORT=9000`. Mismatched ports will cause players to be kicked back to the title screen on join.
 
 ## User Management
 
