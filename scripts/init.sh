@@ -48,6 +48,7 @@ Port=${DEFAULT_PORT:-7777}
 EOF
 
 chown steam:steam "$CONFIG_FILE"
+chmod 444 "$CONFIG_FILE"
 
 # shellcheck disable=SC2317
 term_handler() {
