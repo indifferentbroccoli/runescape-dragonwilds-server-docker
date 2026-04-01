@@ -32,8 +32,24 @@ if [ -z "${OWNER_ID}" ]; then
     exit 1
 fi
 
+CONFIG_DIR="/home/steam/server-files/RSDragonwilds/Saved/Config/LinuxServer"
+CONFIG_FILE="$CONFIG_DIR/DedicatedServer.ini"
+
+mkdir -p "$CONFIG_DIR"
+cat > "$CONFIG_FILE" <<EOF
+[/Script/Dominion.DedicatedServerSettings]
+OwnerId=${OWNER_ID}
+ServerName=${SERVER_NAME:-DragonWildsServer}
+DefaultWorldName=${DEFAULT_WORLD_NAME:-MyWorld}
+AdminPassword=${ADMIN_PASSWORD}
+WorldPassword=${WORLD_PASSWORD}
+Port=${DEFAULT_PORT:-7777}
+EOF
+chattr +i "$CONFIG_FILE"
+
 # shellcheck disable=SC2317
 term_handler() {
+    chattr -i "$CONFIG_FILE" 2>/dev/null || true
     if ! shutdown_server; then
         kill -SIGTERM "$(pgrep -f RSDragonwilds)"
     fi
@@ -53,22 +69,4 @@ su - steam -c "cd /home/steam/server && \
     ./start.sh" &
 
 killpid="$!"
-
-CONFIG_DIR="/home/steam/server-files/RSDragonwilds/Saved/Config/LinuxServer"
-CONFIG_FILE="$CONFIG_DIR/DedicatedServer.ini"
-(
-    while [ ! -f "$CONFIG_FILE" ]; do
-        sleep 1
-    done
-    LogInfo "Config watcher: file found, writing values"
-    cat > "$CONFIG_FILE" <<EOF
-[/Script/Dominion.DedicatedServerSettings]
-OwnerId=${OWNER_ID}
-ServerName=${SERVER_NAME:-DragonWildsServer}
-DefaultWorldName=${DEFAULT_WORLD_NAME:-MyWorld}
-AdminPassword=${ADMIN_PASSWORD}
-WorldPassword=${WORLD_PASSWORD}
-Port=${DEFAULT_PORT:-7777}
-EOF
-) &
 wait "$killpid"

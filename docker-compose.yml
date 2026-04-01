@@ -10,5 +10,7 @@ services:
       - 7777:7777/udp
     env_file:
       - .env
+    cap_add:
+      - LINUX_IMMUTABLE
     volumes:
       - ./server-files:/home/steam/server-files
