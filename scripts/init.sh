@@ -32,24 +32,6 @@ if [ -z "${OWNER_ID}" ]; then
     exit 1
 fi
 
-CONFIG_DIR="/home/steam/server-files/RSDragonwilds/Saved/Config/LinuxServer"
-CONFIG_FILE="$CONFIG_DIR/DedicatedServer.ini"
-mkdir -p "$CONFIG_DIR"
-
-LogInfo "Generating DedicatedServer.ini"
-cat > "$CONFIG_FILE" <<EOF
-[ServerSettings]
-OwnerId=${OWNER_ID}
-ServerName=${SERVER_NAME:-DragonWildsServer}
-DefaultWorldName=${DEFAULT_WORLD_NAME:-MyWorld}
-AdminPassword=${ADMIN_PASSWORD}
-WorldPassword=${WORLD_PASSWORD}
-Port=${DEFAULT_PORT:-7777}
-EOF
-
-chown steam:steam "$CONFIG_FILE"
-chmod 444 "$CONFIG_FILE"
-
 # shellcheck disable=SC2317
 term_handler() {
     if ! shutdown_server; then

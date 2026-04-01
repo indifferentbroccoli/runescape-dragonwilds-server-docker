@@ -23,4 +23,10 @@ LogInfo "Server starting on port ${DEFAULT_PORT} (UDP)"
 LogInfo "Server name: ${SERVER_NAME}"
 LogInfo "Default world: ${DEFAULT_WORLD_NAME}"
 
-exec "$SERVER_EXEC" RSDragonwilds -log -NewConsole -Port="${DEFAULT_PORT}"
+exec "$SERVER_EXEC" RSDragonwilds -log -NewConsole \
+  -Port="${DEFAULT_PORT}" \
+  "-ini:DedicatedServer:[ServerSettings]:OwnerId=${OWNER_ID}" \
+  "-ini:DedicatedServer:[ServerSettings]:ServerName=${SERVER_NAME:-DragonWildsServer}" \
+  "-ini:DedicatedServer:[ServerSettings]:DefaultWorldName=${DEFAULT_WORLD_NAME:-MyWorld}" \
+  "-ini:DedicatedServer:[ServerSettings]:AdminPassword=${ADMIN_PASSWORD}" \
+  "-ini:DedicatedServer:[ServerSettings]:WorldPassword=${WORLD_PASSWORD}"
