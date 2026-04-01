@@ -1,10 +1,10 @@
 <!-- markdownlint-disable-next-line -->
 ![marketing_assets_banner](https://github.com/user-attachments/assets/b8b4ae5c-06bb-46a7-8d94-903a04595036)
-[![GitHub License](https://img.shields.io/github/license/indifferentbroccoli/runscape-dragonwilds-server-docker?style=for-the-badge&color=6aa84f)](https://github.com/indifferentbroccoli/runscape-dragonwilds-server-docker/blob/main/LICENSE)
-[![GitHub Release](https://img.shields.io/github/v/release/indifferentbroccoli/runscape-dragonwilds-server-docker?style=for-the-badge&color=6aa84f)](https://github.com/indifferentbroccoli/runscape-dragonwilds-server-docker/releases)
-[![GitHub Repo stars](https://img.shields.io/github/stars/indifferentbroccoli/runscape-dragonwilds-server-docker?style=for-the-badge&color=6aa84f)](https://github.com/indifferentbroccoli/runscape-dragonwilds-server-docker)
+[![GitHub License](https://img.shields.io/github/license/indifferentbroccoli/runescape-dragonwilds-server-docker?style=for-the-badge&color=6aa84f)](https://github.com/indifferentbroccoli/runescape-dragonwilds-server-docker/blob/main/LICENSE)
+[![GitHub Release](https://img.shields.io/github/v/release/indifferentbroccoli/runescape-dragonwilds-server-docker?style=for-the-badge&color=6aa84f)](https://github.com/indifferentbroccoli/runescape-dragonwilds-server-docker/releases)
+[![GitHub Repo stars](https://img.shields.io/github/stars/indifferentbroccoli/runescape-dragonwilds-server-docker?style=for-the-badge&color=6aa84f)](https://github.com/indifferentbroccoli/runescape-dragonwilds-server-docker)
 [![Discord](https://img.shields.io/discord/798321161082896395?style=for-the-badge&label=Discord&labelColor=5865F2&color=6aa84f)](https://discord.gg/indifferentbroccoli)
-[![Docker Pulls](https://img.shields.io/docker/pulls/indifferentbroccoli/runscape-dragonwilds-server-docker?style=for-the-badge&color=6aa84f)](https://hub.docker.com/r/indifferentbroccoli/runscape-dragonwilds-server-docker)
+[![Docker Pulls](https://img.shields.io/docker/pulls/indifferentbroccoli/runescape-dragonwilds-server-docker?style=for-the-badge&color=6aa84f)](https://hub.docker.com/r/indifferentbroccoli/runescape-dragonwilds-server-docker)
 
 Game server hosting
 
@@ -38,7 +38,7 @@ Copy the `.env.example` file to a new file called `.env`. Then use either `docke
 ```yaml
 services:
   runescape-dragonwilds:
-    image: indifferentbroccoli/runscape-dragonwilds-server-docker
+    image: indifferentbroccoli/runescape-dragonwilds-server-docker
     restart: unless-stopped
     container_name: runescape-dragonwilds
     stop_grace_period: 30s
@@ -66,7 +66,7 @@ docker run -d \
     -p 7777:7777/udp \
     --env-file .env \
     -v ./server-files:/home/steam/server-files \
-    indifferentbroccoli/runscape-dragonwilds-server-docker
+    indifferentbroccoli/runescape-dragonwilds-server-docker
 ```
 
 ## Environment Variables
