@@ -36,20 +36,23 @@ CONFIG_DIR="/home/steam/server-files/RSDragonwilds/Saved/Config/LinuxServer"
 CONFIG_FILE="$CONFIG_DIR/DedicatedServer.ini"
 
 mkdir -p "$CONFIG_DIR"
-cat > "$CONFIG_FILE" <<EOF
+LogInfo "Writing DedicatedServer.ini"
+envsubst > "$CONFIG_FILE" << 'TEMPLATE'
+[SectionsToSave]
+bCanSaveAllSections=true
+
 [/Script/Dominion.DedicatedServerSettings]
-OwnerId=${OWNER_ID}
-ServerName=${SERVER_NAME:-DragonWildsServer}
-DefaultWorldName=${DEFAULT_WORLD_NAME:-MyWorld}
 AdminPassword=${ADMIN_PASSWORD}
+OwnerId=${OWNER_ID}
 WorldPassword=${WORLD_PASSWORD}
-Port=${DEFAULT_PORT:-7777}
-EOF
-chattr +i "$CONFIG_FILE"
+ServerName=${SERVER_NAME}
+DefaultWorldName=${DEFAULT_WORLD_NAME}
+ServerGuid=
+TEMPLATE
+chown steam:steam "$CONFIG_FILE"
 
 # shellcheck disable=SC2317
 term_handler() {
-    chattr -i "$CONFIG_FILE" 2>/dev/null || true
     if ! shutdown_server; then
         kill -SIGTERM "$(pgrep -f RSDragonwilds)"
     fi
