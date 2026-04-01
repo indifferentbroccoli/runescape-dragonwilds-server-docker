@@ -54,14 +54,15 @@ su - steam -c "cd /home/steam/server && \
 
 killpid="$!"
 
-# Write config after server has started and created the directory
 CONFIG_DIR="/home/steam/server-files/RSDragonwilds/Saved/Config/LinuxServer"
 CONFIG_FILE="$CONFIG_DIR/DedicatedServer.ini"
 (
-    sleep 10
-    mkdir -p "$CONFIG_DIR"
+    while [ ! -f "$CONFIG_FILE" ]; do
+        sleep 1
+    done
+    LogInfo "Config watcher: file found, writing values"
     cat > "$CONFIG_FILE" <<EOF
-[ServerSettings]
+[/Script/Dominion.DedicatedServerSettings]
 OwnerId=${OWNER_ID}
 ServerName=${SERVER_NAME:-DragonWildsServer}
 DefaultWorldName=${DEFAULT_WORLD_NAME:-MyWorld}
