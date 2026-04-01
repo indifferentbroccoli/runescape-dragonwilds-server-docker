@@ -12,7 +12,7 @@ Fast RAM, high-speed internet
 
 Eat lag for breakfast
 
-[Try our RuneScape: DragonWilds server hosting free for 2 days!](https://indifferentbroccoli.com/runescape-dragonwilds-server-hosting)
+[Try our RuneScape: DragonWilds server hosting free for 2 days!](https://indifferentbroccoli.com/runescape-dragon-wilds-server-hosting)
 
 ## RuneScape: DragonWilds Dedicated Server Docker
 
