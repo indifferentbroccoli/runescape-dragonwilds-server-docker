@@ -82,6 +82,7 @@ docker run -d \
 | ADMIN_PASSWORD     |                    | **Required.** Password to access Server Management in-game                               |
 | WORLD_PASSWORD     |                    | Optional join password. Leave empty for a public server                                   |
 | DEFAULT_PORT       | 7777               | The UDP port the server listens on                                                        |
+| MAX_PLAYERS        | 6                  | Maximum number of players allowed on the server                                           |
 
 > [!NOTE]
 > If your server doesn't appear, check that UDP port 7777 is forwarded through your firewall/router and that `OWNER_ID` and `ADMIN_PASSWORD` are set.

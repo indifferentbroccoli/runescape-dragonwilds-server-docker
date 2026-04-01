@@ -42,6 +42,7 @@ ENV HOME=/home/steam \
     OWNER_ID="" \
     ADMIN_PASSWORD="" \
     WORLD_PASSWORD="" \
+    MAX_PLAYERS=6 \
     MULTIHOME="" \
     UPDATE_ON_START=true
 
