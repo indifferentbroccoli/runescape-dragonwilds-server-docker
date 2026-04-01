@@ -42,6 +42,7 @@ ENV HOME=/home/steam \
     OWNER_ID="" \
     ADMIN_PASSWORD="" \
     WORLD_PASSWORD="" \
+    MULTIHOME="" \
     UPDATE_ON_START=true
 
 COPY ./scripts /home/steam/server/

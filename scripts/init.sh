@@ -69,6 +69,7 @@ su - steam -c "cd /home/steam/server && \
     OWNER_ID='${OWNER_ID}' \
     ADMIN_PASSWORD='${ADMIN_PASSWORD}' \
     WORLD_PASSWORD='${WORLD_PASSWORD}' \
+    MULTIHOME='${MULTIHOME}' \
     ./start.sh" &
 
 killpid="$!"

@@ -23,4 +23,11 @@ LogInfo "Server starting on port ${DEFAULT_PORT} (UDP)"
 LogInfo "Server name: ${SERVER_NAME}"
 LogInfo "Default world: ${DEFAULT_WORLD_NAME}"
 
-exec "$SERVER_EXEC" RSDragonwilds -log -NewConsole -Port="${DEFAULT_PORT}"
+LAUNCH_ARGS="RSDragonwilds -log -NewConsole -Port=${DEFAULT_PORT}"
+
+if [ -n "${MULTIHOME}" ]; then
+    LogInfo "Multihome: ${MULTIHOME}"
+    LAUNCH_ARGS="${LAUNCH_ARGS} -MULTIHOME=${MULTIHOME}"
+fi
+
+exec "$SERVER_EXEC" $LAUNCH_ARGS
