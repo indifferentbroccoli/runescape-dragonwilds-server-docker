@@ -71,18 +71,19 @@ docker run -d \
 
 ## Environment Variables
 
-| Variable           | Default            | Info                                                                                      |
-|--------------------|--------------------|-------------------------------------------------------------------------------------------|
-| PUID               | 1000               | User ID for file permissions                                                              |
-| PGID               | 1000               | Group ID for file permissions                                                             |
-| UPDATE_ON_START    | true               | If set to false, skips downloading and validating server files on startup                 |
-| OWNER_ID           |                    | **Required.** Your RuneScape: DragonWilds Player ID (found in Settings Menu in-game)     |
-| SERVER_NAME        | DragonWildsServer  | Display name of the server                                                                |
-| DEFAULT_WORLD_NAME | MyWorld            | Name of the default world created on first startup                                        |
-| ADMIN_PASSWORD     |                    | **Required.** Password to access Server Management in-game                               |
-| WORLD_PASSWORD     |                    | Optional join password. Leave empty for a public server                                   |
-| DEFAULT_PORT       | 7777               | The UDP port the server listens on                                                        |
-| MAX_PLAYERS        | 6                  | Maximum number of players allowed on the server                                           |
+| Variable                | Default            | Info                                                                                        |
+|-------------------------|--------------------|---------------------------------------------------------------------------------------------|
+| PUID                    | 1000               | User ID for file permissions                                                                |
+| PGID                    | 1000               | Group ID for file permissions                                                               |
+| UPDATE_ON_START         | true               | If set to false, skips downloading and validating server files on startup                   |
+| OWNER_ID                |                    | **Required.** Your RuneScape: DragonWilds Player ID (found in Settings Menu in-game)        |
+| SERVER_NAME             | DragonWildsServer  | Display name of the server                                                                  |
+| DEFAULT_WORLD_NAME      | MyWorld            | Name of the default world created on first startup                                          |
+| ADMIN_PASSWORD          |                    | **Required.** Password to access Server Management in-game                                  |
+| WORLD_PASSWORD          |                    | Optional join password. Leave empty for a public server                                     |
+| DEFAULT_PORT            | 7777               | The UDP port the server listens on                                                          |
+| MAX_PLAYERS             | 6                  | Maximum number of players allowed on the server                                             |
+| REGENERATE_INI_ON_START | false              | If set to false, skips regenerating the server ini and resetting the ServerGuid ans players |
 
 > [!NOTE]
 > If your server doesn't appear, check that UDP port 7777 is forwarded through your firewall/router and that `OWNER_ID` and `ADMIN_PASSWORD` are set.
