@@ -32,12 +32,12 @@ if [ -z "${OWNER_ID}" ]; then
     exit 1
 fi
 
-CONFIG_DIR="/home/steam/server-files/RSDragonwilds/Saved/Config/LinuxServer"
-CONFIG_FILE="$CONFIG_DIR/DedicatedServer.ini"
-
-mkdir -p "$CONFIG_DIR"
-LogInfo "Writing DedicatedServer.ini"
-envsubst > "$CONFIG_FILE" << 'TEMPLATE'
+generate_server_ini_on_load() {
+    local config_file="$1"
+    local config_dir="$2"
+    mkdir -p "$config_dir"
+    LogInfo "Writing DedicatedServer.ini"
+    envsubst > "$config_file" << 'TEMPLATE'
 [SectionsToSave]
 bCanSaveAllSections=true
 
@@ -49,7 +49,19 @@ ServerName=${SERVER_NAME}
 DefaultWorldName=${DEFAULT_WORLD_NAME}
 ServerGuid=
 TEMPLATE
-chown steam:steam "$CONFIG_FILE"
+    chown steam:steam "$config_file"
+}
+
+CONFIG_DIR="/home/steam/server-files/RSDragonwilds/Saved/Config/LinuxServer"
+CONFIG_FILE="$CONFIG_DIR/DedicatedServer.ini"
+
+# On reload check REGENERATE_SERVER_INI_ON_RESTART if we should generate the ini file
+# Will always generate the DedicatedServer.ini if it doesn't exist ie on the first start
+if [ ! -f "$CONFIG_FILE" ] || [ "${REGENERATE_SERVER_INI_ON_RESTART:-false}" = "true" ]; then
+    generate_server_ini_on_load "$CONFIG_FILE" "$CONFIG_DIR"
+else
+    LogInfo "DedicatedServer.ini already exists, skipping regeneration"
+fi
 
 # shellcheck disable=SC2317
 term_handler() {
