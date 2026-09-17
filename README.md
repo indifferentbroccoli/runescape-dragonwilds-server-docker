@@ -78,7 +78,7 @@ docker run -d \
 | UPDATE_ON_START    | true               | If set to false, skips downloading and validating server files on startup                 |
 | OWNER_ID           |                    | **Required.** Your RuneScape: DragonWilds Player ID (found in Settings Menu in-game)     |
 | SERVER_NAME        | DragonWildsServer  | Display name of the server                                                                |
-| DEFAULT_WORLD_NAME | MyWorld            | Name of the default world created on first startup                                        |
+| DEFAULT_WORLD_NAME | MyWorld            | Name of the default world created on first startup (This name shows up in the server search|
 | ADMIN_PASSWORD     |                    | **Required.** Password to access Server Management in-game                               |
 | WORLD_PASSWORD     |                    | Optional join password. Leave empty for a public server                                   |
 | DEFAULT_PORT       | 7777               | The UDP port the server listens on                                                        |
