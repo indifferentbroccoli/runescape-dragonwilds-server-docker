@@ -52,6 +52,10 @@ install() {
   LogSuccess "Server install complete"
 }
 
+server_pid() {
+  pgrep -o -f "Binaries/Linux/RSDragonwildsServer-Linux-Shipping"
+}
+
 # Attempt to shutdown the server gracefully
 # Returns 0 if it is shutdown
 # Returns 1 if it is not able to be shutdown
@@ -60,7 +64,7 @@ shutdown_server() {
   LogAction "Attempting graceful server shutdown"
 
   local pid
-  pid=$(pgrep -f "RSDragonwilds")
+  pid=$(server_pid)
 
   if [ -n "$pid" ]; then
     kill -SIGTERM "$pid"

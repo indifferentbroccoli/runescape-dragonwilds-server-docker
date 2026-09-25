@@ -84,7 +84,7 @@ docker run -d \
 | ADMIN_PASSWORD     |                    | **Required.** Password to access Server Management in-game                               |
 | WORLD_PASSWORD     |                    | Optional join password. Leave empty for a public server                                   |
 | DEFAULT_PORT       | 7777               | The UDP port the server listens on                                                        |
-| BEACON_PORT        | 8888               | The UDP port for the online beacon (`ListenPort` in `Engine.ini`)                        |
+| BEACON_PORT        | 8888               | The UDP port for the world settings beacon (used to create/edit worlds in-game)           |
 | MAX_PLAYERS        | 6                  | Maximum number of players allowed on the server                                           |
 
 > [!NOTE]
@@ -92,7 +92,7 @@ docker run -d \
 
 ## Port Forwarding
 
-Forward **7777 UDP** (game) and **8888 UDP** (online beacon, set via `ListenPort` in `Engine.ini`). Every router between you and your ISP will need port forwarding configured. See [portforward.com](https://portforward.com) for router-specific guides.
+Forward **7777 UDP** (game) and **8888 UDP** (world settings beacon, needed to create/edit worlds in-game). Every router between you and your ISP will need port forwarding configured. See [portforward.com](https://portforward.com) for router-specific guides.
 
 > [!IMPORTANT]
 > The internal and external ports **must match**. If you change `DEFAULT_PORT` or `BEACON_PORT`, update the port mapping in your compose file to match — e.g. `9000:9000/udp` with `DEFAULT_PORT=9000`. Mismatched ports will cause players to be kicked back to the title screen on join.

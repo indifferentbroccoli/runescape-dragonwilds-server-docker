@@ -51,19 +51,11 @@ ServerGuid=
 TEMPLATE
 chown steam:steam "$CONFIG_FILE"
 
-ENGINE_FILE="$CONFIG_DIR/Engine.ini"
-LogInfo "Setting OnlineBeaconHost ListenPort=${BEACON_PORT} in Engine.ini"
-if grep -q "OnlineBeaconHost" "$ENGINE_FILE" 2>/dev/null; then
-    sed -i "/OnlineBeaconHost/,/^\[/ s/^ListenPort=.*/ListenPort=${BEACON_PORT}/" "$ENGINE_FILE"
-else
-    printf '\n[/Script/OnlineSubsystemUtils.OnlineBeaconHost]\nListenPort=%s\n' "$BEACON_PORT" >> "$ENGINE_FILE"
-fi
-chown steam:steam "$ENGINE_FILE"
-
 # shellcheck disable=SC2317
 term_handler() {
     if ! shutdown_server; then
-        kill -SIGTERM "$(pgrep -f RSDragonwilds)"
+        pid=$(server_pid)
+        [ -n "$pid" ] && kill -SIGKILL "$pid"
     fi
     tail --pid="$killpid" -f 2>/dev/null
 }
@@ -71,7 +63,7 @@ term_handler() {
 trap 'term_handler' SIGTERM
 
 # Start the server as steam user
-export DEFAULT_PORT SERVER_NAME DEFAULT_WORLD_NAME OWNER_ID ADMIN_PASSWORD WORLD_PASSWORD MAX_PLAYERS MULTIHOME
+export DEFAULT_PORT BEACON_PORT SERVER_NAME DEFAULT_WORLD_NAME OWNER_ID ADMIN_PASSWORD WORLD_PASSWORD MAX_PLAYERS MULTIHOME
 
 su -m steam -c "cd /home/steam/server && ./start.sh" &
 
