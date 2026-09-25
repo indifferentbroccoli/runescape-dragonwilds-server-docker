@@ -37,6 +37,7 @@ LABEL maintainer="support@indifferentbroccoli.com" \
 
 ENV HOME=/home/steam \
     DEFAULT_PORT=7777 \
+    BEACON_PORT=8888 \
     SERVER_NAME="DragonWildsServer" \
     DEFAULT_WORLD_NAME="MyWorld" \
     OWNER_ID="" \

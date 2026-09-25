@@ -44,6 +44,7 @@ services:
     stop_grace_period: 30s
     ports:
       - 7777:7777/udp
+      - 8888:8888/udp
     env_file:
       - .env
     volumes:
@@ -64,6 +65,7 @@ docker run -d \
     --name runescape-dragonwilds \
     --stop-timeout 30 \
     -p 7777:7777/udp \
+    -p 8888:8888/udp \
     --env-file .env \
     -v ./server-files:/home/steam/server-files \
     indifferentbroccoli/runescape-dragonwilds-server-docker
@@ -82,6 +84,7 @@ docker run -d \
 | ADMIN_PASSWORD     |                    | **Required.** Password to access Server Management in-game                               |
 | WORLD_PASSWORD     |                    | Optional join password. Leave empty for a public server                                   |
 | DEFAULT_PORT       | 7777               | The UDP port the server listens on                                                        |
+| BEACON_PORT        | 8888               | The UDP port for the online beacon (`ListenPort` in `Engine.ini`)                        |
 | MAX_PLAYERS        | 6                  | Maximum number of players allowed on the server                                           |
 
 > [!NOTE]
@@ -89,10 +92,10 @@ docker run -d \
 
 ## Port Forwarding
 
-Forward **7777 UDP only**. Every router between you and your ISP will need port forwarding configured. See [portforward.com](https://portforward.com) for router-specific guides.
+Forward **7777 UDP** (game) and **8888 UDP** (online beacon, set via `ListenPort` in `Engine.ini`). Every router between you and your ISP will need port forwarding configured. See [portforward.com](https://portforward.com) for router-specific guides.
 
 > [!IMPORTANT]
-> The internal and external ports **must match**. If you change `DEFAULT_PORT`, update the port mapping in your compose file to match — e.g. `9000:9000/udp` with `DEFAULT_PORT=9000`. Mismatched ports will cause players to be kicked back to the title screen on join.
+> The internal and external ports **must match**. If you change `DEFAULT_PORT` or `BEACON_PORT`, update the port mapping in your compose file to match — e.g. `9000:9000/udp` with `DEFAULT_PORT=9000`. Mismatched ports will cause players to be kicked back to the title screen on join.
 
 ## User Management
 
