@@ -36,6 +36,10 @@ CONFIG_DIR="/home/steam/server-files/RSDragonwilds/Saved/Config/LinuxServer"
 CONFIG_FILE="$CONFIG_DIR/DedicatedServer.ini"
 
 mkdir -p "$CONFIG_DIR"
+
+SERVER_GUID=$(sed -n 's/^ServerGuid=\([0-9A-Fa-f]*\).*/\1/p' "$CONFIG_FILE" 2>/dev/null | head -n1)
+export SERVER_GUID
+
 LogInfo "Writing DedicatedServer.ini"
 envsubst > "$CONFIG_FILE" << 'TEMPLATE'
 [SectionsToSave]
@@ -47,7 +51,7 @@ OwnerId=${OWNER_ID}
 WorldPassword=${WORLD_PASSWORD}
 ServerName=${SERVER_NAME}
 DefaultWorldName=${DEFAULT_WORLD_NAME}
-ServerGuid=
+ServerGuid=${SERVER_GUID}
 TEMPLATE
 chown steam:steam "$CONFIG_FILE"
 
