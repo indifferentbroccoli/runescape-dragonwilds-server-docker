@@ -36,6 +36,26 @@ CONFIG_DIR="/home/steam/server-files/RSDragonwilds/Saved/Config/LinuxServer"
 CONFIG_FILE="$CONFIG_DIR/DedicatedServer.ini"
 
 mkdir -p "$CONFIG_DIR"
+
+# Preserve server-managed state across restarts. The whole ini is regenerated
+# from the template below, so we carry over values the server owns:
+#   - ServerGuid: the server's identity. If absent, leave it empty and let the
+#     server generate one on first boot.
+#   - KnownPlayerList: the player roster (privileges, bans). There can be many.
+SERVER_GUID=""
+KNOWN_PLAYERS=""
+if [ -f "$CONFIG_FILE" ]; then
+    SERVER_GUID=$(sed -n 's/^ServerGuid=//p' "$CONFIG_FILE" | head -n 1)
+    KNOWN_PLAYERS=$(grep '^KnownPlayerList=' "$CONFIG_FILE" || true)
+fi
+export SERVER_GUID
+
+if [ -n "$SERVER_GUID" ]; then
+    LogInfo "Preserving existing ServerGuid: $SERVER_GUID"
+else
+    LogInfo "No existing ServerGuid found, server will generate one"
+fi
+
 LogInfo "Writing DedicatedServer.ini"
 envsubst > "$CONFIG_FILE" << 'TEMPLATE'
 [SectionsToSave]
@@ -47,8 +67,18 @@ OwnerId=${OWNER_ID}
 WorldPassword=${WORLD_PASSWORD}
 ServerName=${SERVER_NAME}
 DefaultWorldName=${DEFAULT_WORLD_NAME}
-ServerGuid=
+ServerGuid=${SERVER_GUID}
 TEMPLATE
+
+# Append the preserved roster verbatim (not through envsubst, so usernames
+# containing '$' or other special characters are kept intact). These belong to
+# the [/Script/Dominion.DedicatedServerSettings] section, which is the last one
+# in the file.
+if [ -n "$KNOWN_PLAYERS" ]; then
+    printf '%s\n' "$KNOWN_PLAYERS" >> "$CONFIG_FILE"
+    player_count=$(printf '%s\n' "$KNOWN_PLAYERS" | grep -c '^KnownPlayerList=')
+    LogInfo "Preserved $player_count known player(s)"
+fi
 chown steam:steam "$CONFIG_FILE"
 
 # shellcheck disable=SC2317
