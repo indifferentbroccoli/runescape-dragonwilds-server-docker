@@ -58,6 +58,7 @@ OwnerId=${OWNER_ID}
 WorldPassword=${WORLD_PASSWORD}
 ServerName=${SERVER_NAME}
 DefaultWorldName=${DEFAULT_WORLD_NAME}
+PlatformPolicy=${PLATFORM_POLICY}
 ServerGuid=${SERVER_GUID}
 TEMPLATE
 chown -R steam:steam /home/steam/server-files

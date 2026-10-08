@@ -86,6 +86,7 @@ docker run -d \
 | DEFAULT_PORT       | 7777               | The UDP port the server listens on                                                        |
 | BEACON_PORT        | 8888               | The UDP port for the world settings beacon (used to create/edit worlds in-game)           |
 | MAX_PLAYERS        | 6                  | Maximum number of players allowed on the server                                           |
+| PLATFORM_POLICY    | Crossplay          | Which platforms can join: `Crossplay`, `PC`, `PlayStation`, `Xbox` or `Nintendo`          |
 
 > [!NOTE]
 > If your server doesn't appear, check that UDP port 7777 is forwarded through your firewall/router and that `OWNER_ID` and `ADMIN_PASSWORD` are set.

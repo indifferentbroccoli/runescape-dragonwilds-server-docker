@@ -54,6 +54,7 @@ ENV HOME=/home/steam \
     ADMIN_PASSWORD="" \
     WORLD_PASSWORD="" \
     MAX_PLAYERS=6 \
+    PLATFORM_POLICY=Crossplay \
     MULTIHOME="" \
     UPDATE_ON_START=true
 
