@@ -19,8 +19,7 @@
     X(VerQueryValueA) \
     X(VerQueryValueW)
 
-/* This is because Wine refuses to load without it. This *has* to persist to load
-Otherwise, it will straight up not load UE4SS. */
+/* Forward every export to the real version.dll, or the game fails to load this one */
 #define DEFINE_STUB(name) \
     FARPROC real_##name; \
     __attribute__((naked)) void proxy_##name(void) { __asm__("jmp *real_" #name "(%rip)"); }
@@ -33,6 +32,8 @@ static void load_real_version(void)
     lstrcpyW(path + len, L"\\version.dll");
 
     HMODULE real = LoadLibraryW(path);
+    if (!real)
+        return;
 #define RESOLVE(name) real_##name = GetProcAddress(real, #name);
     VERSION_EXPORTS(RESOLVE)
 }

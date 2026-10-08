@@ -40,16 +40,13 @@ fi
 
 LogInfo "UE4SS enabled, running the Windows server build through Wine"
 
-# Under Wine only part of the log reaches stdout, so follow the log files
 tail -q -n 0 -F "$SERVER_FILES/RSDragonwilds/Saved/Logs/RSDragonwilds.log" 2>/dev/null &
-TAIL_PIDS=("$!")
-tail -q -n 0 -F "$SERVER_FILES/RSDragonwilds/Binaries/Win64/ue4ss/UE4SS.log" 2>/dev/null > >(sed -u 's/^/[UE4SS] /') &
-TAIL_PIDS+=("$!")
+tail_pid=$!
 
 export WINEDLLOVERRIDES="dwmapi,version=n,b"
 
 wine "$SERVER_EXEC" $LAUNCH_ARGS -log > /dev/null
 status=$?
 
-kill "${TAIL_PIDS[@]}" 2>/dev/null
+kill "$tail_pid" 2>/dev/null
 exit "$status"

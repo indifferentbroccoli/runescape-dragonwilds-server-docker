@@ -1,25 +1,12 @@
-# BUILD THE UE4SS FILES
-FROM --platform=linux/amd64 debian:bookworm-slim AS ue4ss-files
+# BUILD THE UE4SS LOADER
+FROM --platform=linux/amd64 debian:bookworm-slim AS ue4ss-loader
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    ca-certificates \
-    unzip \
-    jq \
-    gcc-mingw-w64-x86-64 \
+RUN apt-get update && apt-get install -y --no-install-recommends gcc-mingw-w64-x86-64 \
     && rm -rf /var/lib/apt/lists/*
-
-# Bundle the latest UE4SS experimental build
-RUN url=$(curl -fsSL https://api.github.com/repos/UE4SS-RE/RE-UE4SS/releases/tags/experimental-latest | \
-        jq -r '.assets[].browser_download_url | select(test("/UE4SS_v[^/]*\\.zip$"))' | head -n1) && \
-    echo "Bundling UE4SS from ${url}" && \
-    mkdir -p /ue4ss && \
-    curl -fsSL "$url" -o /ue4ss/UE4SS.zip && \
-    unzip -tq /ue4ss/UE4SS.zip dwmapi.dll ue4ss/UE4SS.dll
 
 COPY ./ue4ss-loader /src
 
-RUN x86_64-w64-mingw32-gcc -shared -O2 -s -Wall -o /ue4ss/version.dll /src/version.c /src/version.def
+RUN x86_64-w64-mingw32-gcc -shared -O2 -s -Wall -o /version.dll /src/version.c /src/version.def
 
 # BUILD THE SERVER IMAGE
 FROM --platform=linux/amd64 debian:bookworm-slim AS base
@@ -68,8 +55,7 @@ ENV HOME=/home/steam \
     WORLD_PASSWORD="" \
     MAX_PLAYERS=6 \
     MULTIHOME="" \
-    UPDATE_ON_START=true \
-    UE4SS_ENABLED=false
+    UPDATE_ON_START=true
 
 COPY ./scripts /home/steam/server/
 
@@ -88,59 +74,30 @@ ENTRYPOINT ["/home/steam/server/init.sh"]
 # BUILD THE UE4SS IMAGE
 FROM base AS ue4ss
 
-# Install Wine 
-ARG WINE_VERSION=11.0.0.0~bookworm-1
+# Install Wine
 RUN dpkg --add-architecture i386 && \
-    mkdir -p /etc/apt/keyrings && \
-    curl -fsSL https://dl.winehq.org/wine-builds/winehq.key -o /etc/apt/keyrings/winehq-archive.asc && \
-    printf '%s\n' \
-        'Types: deb' \
-        'URIs: https://dl.winehq.org/wine-builds/debian' \
-        'Suites: bookworm' \
-        'Components: main' \
-        'Architectures: amd64 i386' \
-        'Signed-By: /etc/apt/keyrings/winehq-archive.asc' \
-        > /etc/apt/sources.list.d/winehq-bookworm.sources && \
-    apt-get update && apt-get install -y --no-install-recommends \
-        winehq-stable="${WINE_VERSION}" \
-        wine-stable="${WINE_VERSION}" \
-        wine-stable-amd64="${WINE_VERSION}" \
-        wine-stable-i386="${WINE_VERSION}" \
-        libgnutls30 \
-        libfreetype6 \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    apt-get update && apt-get install -y --no-install-recommends gnupg jq && \
+    curl -fsSL https://dl.winehq.org/wine-builds/winehq.key | \
+        gpg --dearmor -o /usr/share/keyrings/winehq-archive.key && \
+    echo "deb [arch=amd64,i386 signed-by=/usr/share/keyrings/winehq-archive.key] https://dl.winehq.org/wine-builds/debian/ bookworm main" \
+        > /etc/apt/sources.list.d/winehq.list && \
+    apt-get update && apt-get install -y --install-recommends winehq-stable && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 ENV UE4SS_ENABLED=true \
     WINEPREFIX=/home/steam/.wine \
     WINEARCH=win64 \
     WINEDEBUG=-all
 
-# Create the Wine prefix with the native VC++ runtime, Wine's own msvcp140 is incomplete
+# Init the Wine prefix without a display
 USER steam
 RUN WINEDLLOVERRIDES="mscoree,mshtml=" wineboot --init && \
     wine reg add 'HKCU\Software\Wine\Drivers' /v Graphics /d null /f && \
-    curl -fsSL https://aka.ms/vs/17/release/vc_redist.x64.exe -o /tmp/vc_redist.x64.exe && \
-    (wine /tmp/vc_redist.x64.exe /install /quiet /norestart || true) && \
-    wineserver -w && \
-    ! grep -qaE 'Wine (builtin|placeholder) DLL' "$WINEPREFIX/drive_c/windows/system32/msvcp140_atomic_wait.dll" && \
-    for dll in concrt140 msvcp140 msvcp140_1 msvcp140_2 msvcp140_atomic_wait msvcp140_codecvt_ids \
-               vcamp140 vccorlib140 vcomp140 vcruntime140 vcruntime140_1; do \
-        wine reg add 'HKCU\Software\Wine\DllOverrides' /v "$dll" /d native,builtin /f || exit 1; \
-    done && \
-    wineserver -w && \
-    rm /tmp/vc_redist.x64.exe && \
-    # Replace the prefix's copies of Wine's DLLs with symlinks (~1.2GB)
-    for pair in system32:x86_64-windows syswow64:i386-windows; do \
-        lib="/opt/wine-stable/lib/wine/${pair#*:}"; \
-        for f in "$WINEPREFIX/drive_c/windows/${pair%%:*}"/*; do \
-            b="$lib/${f##*/}"; \
-            if [ -f "$b" ] && cmp -s "$f" "$b"; then ln -sf "$b" "$f"; fi; \
-        done; \
-    done
+    wineserver -w
 USER root
 
-COPY --from=ue4ss-files /ue4ss /ue4ss
+COPY --from=ue4ss-loader /version.dll /ue4ss/version.dll
 
 # NATIVE IMAGE
 FROM base AS native

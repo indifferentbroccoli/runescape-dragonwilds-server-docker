@@ -1,4 +1,0 @@
-# For Windows users
-*.sh text eol=lf
-Dockerfile text eol=lf
-branding text eol=lf

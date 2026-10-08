@@ -17,11 +17,6 @@ find /home/steam \( ! -user steam -o ! -group steam \) -exec chown -h steam:stea
 
 cat /branding
 
-if [ "${UE4SS_ENABLED}" = "true" ] && ! command -v wine > /dev/null; then
-    LogError "UE4SS_ENABLED is true, but this image does not include Wine. Use the ue4ss image tag instead."
-    exit 1
-fi
-
 if [ "${UPDATE_ON_START:-true}" = "true" ]; then
     install
 else
@@ -32,7 +27,7 @@ chmod +x /home/steam/server-files/RSDragonwilds/Binaries/Linux/RSDragonwildsServ
 chmod +x /home/steam/server-files/RSDragonwilds/Plugins/Developer/Sentry/Binaries/Linux/crashpad_handler 2>/dev/null || true
 
 if [ "${UE4SS_ENABLED}" = "true" ] && ! install_ue4ss; then
-    LogError "UE4SS_ENABLED is true but UE4SS could not be installed."
+    LogError "UE4SS could not be installed."
     exit 1
 fi
 

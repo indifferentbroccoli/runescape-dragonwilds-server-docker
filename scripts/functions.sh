@@ -70,7 +70,7 @@ install() {
   LogSuccess "Server install complete"
 }
 
-# Installs UE4SS if missing, keeping existing settings and mods
+# Installs or updates UE4SS to the latest experimental build, keeping settings and mods
 install_ue4ss() {
   local win64_dir="/home/steam/server-files/RSDragonwilds/Binaries/Win64"
 
@@ -78,18 +78,22 @@ install_ue4ss() {
   mkdir -p "$win64_dir"
   cp -f /ue4ss/version.dll "$win64_dir/"
 
-  if [ -f "$win64_dir/ue4ss/UE4SS.dll" ]; then
-    LogInfo "UE4SS is already installed, skipping install"
-    return 0
-  fi
-
   LogAction "Installing UE4SS"
 
-  # Add missing files without overwriting settings or mods, then refresh the DLLs
-  unzip -qn /ue4ss/UE4SS.zip -d "$win64_dir" &&
-    unzip -qo /ue4ss/UE4SS.zip dwmapi.dll ue4ss/UE4SS.dll -d "$win64_dir" || return 1
+  local url
+  url=$(curl -fsSL https://api.github.com/repos/UE4SS-RE/RE-UE4SS/releases/tags/experimental-latest |
+    jq -r '[.assets[].browser_download_url | select(test("/UE4SS_v[^/]*\\.zip$"))] | first // empty')
 
-  LogSuccess "UE4SS install complete"
+  # Add missing files without overwriting settings or mods, then refresh the DLLs
+  if [ -n "$url" ] && curl -fsSL "$url" -o /tmp/UE4SS.zip; then
+    unzip -qn /tmp/UE4SS.zip -d "$win64_dir" &&
+      unzip -qo /tmp/UE4SS.zip dwmapi.dll ue4ss/UE4SS.dll -d "$win64_dir"
+    rm -f /tmp/UE4SS.zip
+  else
+    LogWarn "Could not download UE4SS, using the installed version"
+  fi
+
+  [ -f "$win64_dir/ue4ss/UE4SS.dll" ]
 }
 
 # Anchored to skip Wine's start.exe, which only has the path as an argument
