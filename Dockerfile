@@ -1,5 +1,15 @@
+# BUILD THE UE4SS LOADER
+FROM --platform=linux/amd64 debian:bookworm-slim AS ue4ss-loader
+
+RUN apt-get update && apt-get install -y --no-install-recommends gcc-mingw-w64-x86-64 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY ./ue4ss-loader /src
+
+RUN x86_64-w64-mingw32-gcc -shared -O2 -s -Wall -o /version.dll /src/version.c /src/version.def
+
 # BUILD THE SERVER IMAGE
-FROM --platform=linux/amd64 debian:bookworm-slim
+FROM --platform=linux/amd64 debian:bookworm-slim AS base
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -44,6 +54,7 @@ ENV HOME=/home/steam \
     ADMIN_PASSWORD="" \
     WORLD_PASSWORD="" \
     MAX_PLAYERS=6 \
+    PLATFORM_POLICY=Crossplay \
     MULTIHOME="" \
     UPDATE_ON_START=true
 
@@ -57,6 +68,37 @@ RUN mkdir -p /home/steam/server-files && \
 WORKDIR /home/steam/server
 
 HEALTHCHECK --start-period=5m \
-            CMD pgrep -f "RSDragonwilds" > /dev/null || exit 1
+            CMD pgrep -f "^[^ ]*RSDragonwildsServer-(Linux|Win64)-Shipping" > /dev/null || exit 1
 
 ENTRYPOINT ["/home/steam/server/init.sh"]
+
+# BUILD THE UE4SS IMAGE
+FROM base AS ue4ss
+
+# Install Wine
+RUN dpkg --add-architecture i386 && \
+    apt-get update && apt-get install -y --no-install-recommends gnupg jq && \
+    curl -fsSL https://dl.winehq.org/wine-builds/winehq.key | \
+        gpg --dearmor -o /usr/share/keyrings/winehq-archive.key && \
+    echo "deb [arch=amd64,i386 signed-by=/usr/share/keyrings/winehq-archive.key] https://dl.winehq.org/wine-builds/debian/ bookworm main" \
+        > /etc/apt/sources.list.d/winehq.list && \
+    apt-get update && apt-get install -y --install-recommends winehq-stable && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+ENV UE4SS_ENABLED=true \
+    WINEPREFIX=/home/steam/.wine \
+    WINEARCH=win64 \
+    WINEDEBUG=-all
+
+# Init the Wine prefix without a display
+USER steam
+RUN WINEDLLOVERRIDES="mscoree,mshtml=" wineboot --init && \
+    wine reg add 'HKCU\Software\Wine\Drivers' /v Graphics /d null /f && \
+    wineserver -w
+USER root
+
+COPY --from=ue4ss-loader /version.dll /ue4ss/version.dll
+
+# NATIVE IMAGE
+FROM base AS native

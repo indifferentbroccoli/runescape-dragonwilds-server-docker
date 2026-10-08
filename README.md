@@ -86,6 +86,7 @@ docker run -d \
 | DEFAULT_PORT       | 7777               | The UDP port the server listens on                                                        |
 | BEACON_PORT        | 8888               | The UDP port for the world settings beacon (used to create/edit worlds in-game)           |
 | MAX_PLAYERS        | 6                  | Maximum number of players allowed on the server                                           |
+| PLATFORM_POLICY    | Crossplay          | Which platforms can join: `Crossplay`, `PC`, `PlayStation`, `Xbox` or `Nintendo`          |
 
 > [!NOTE]
 > If your server doesn't appear, check that UDP port 7777 is forwarded through your firewall/router and that `OWNER_ID` and `ADMIN_PASSWORD` are set.
@@ -106,6 +107,34 @@ Dedicated Servers divide users into three categories:
 - **Regular users**
 
 Owners can ban and unban anyone (online or offline). Admins can ban regular users who are online.
+
+## Mods
+
+### Pak mods
+
+Place `.pak` mods (with their `.utoc` / `.ucas` files, if any) in `server-files/RSDragonwilds/Content/Paks/~mods/`. These do not need UE4SS.
+
+### UE4SS mods
+
+UE4SS only works with the Windows server, so it needs the `ue4ss` image tag, which runs the Windows server through Wine:
+
+| Tag                       | Server                                 |
+|---------------------------|----------------------------------------|
+| `latest`, `vX.Y.Z`        | Native Linux server                    |
+| `ue4ss`, `vX.Y.Z-ue4ss`   | Windows server through Wine with UE4SS |
+
+```yaml
+services:
+  runescape-dragonwilds:
+    image: indifferentbroccoli/runescape-dragonwilds-server-docker:ue4ss
+```
+
+On every start, the `ue4ss` image installs or updates the latest [UE4SS experimental build](https://github.com/UE4SS-RE/RE-UE4SS/releases/tag/experimental-latest) into `server-files/RSDragonwilds/Binaries/Win64/`. Your settings and mods are kept. Switching between tags downloads the server again and your worlds are kept.
+
+Install mods into `server-files/RSDragonwilds/Binaries/Win64/ue4ss/Mods/` and enable them in `mods.txt`, then restart the container. UE4SS will log to `ue4ss/UE4SS.log`.
+
+> [!WARNING]
+> Running the Windows server through Wine is not supported by Jagex. Mods may break with any game update.
 
 ## Volumes
 

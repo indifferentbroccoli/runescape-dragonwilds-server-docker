@@ -29,5 +29,21 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64
+          target: native
           push: true
           tags: '${{ steps.meta.outputs.tags }}'
+      - name: Docker - Metadata (UE4SS)
+        id: meta_ue4ss
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ github.repository }}
+          tags: 'type=raw,value=dev-ue4ss'
+          flavor: latest=false
+      - name: Docker - Build / Push (UE4SS)
+        uses: docker/build-push-action@v6
+        with:
+          platforms: linux/amd64
+          target: ue4ss
+          push: true
+          tags: '${{ steps.meta_ue4ss.outputs.tags }}'
